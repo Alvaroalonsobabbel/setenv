@@ -1,6 +1,6 @@
 # SetEnv for 1Password
 
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Alvaroalonsobabbel/setenv) ![Go](https://github.com/Alvaroalonsobabbel/setenv/actions/workflows/go-test.yml/badge.svg)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Alvaroalonsobabbel/setenv) ![Test](https://github.com/Alvaroalonsobabbel/setenv/actions/workflows/go-test.yml/badge.svg)
 
 It creates a `.env` file with Variables pointing to 1Password credentials.
 
