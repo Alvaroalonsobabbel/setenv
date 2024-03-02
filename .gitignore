@@ -1,0 +1,5 @@
+.DS_Store
+setenv
+test*
+.env
+env.json
