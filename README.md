@@ -1,6 +1,6 @@
 # SetEnv for 1Password
 
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Alvaroalonsobabbel/setenv) ![Lint](https://github.com/babbel-internal-it/slack.internal_it_app/actions/workflows/lint_rspec.yml/badge.svg)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Alvaroalonsobabbel/setenv) ![Lint](https://github.com/Alvaroalonsobabbel/setenv/actions/workflows/test.yml/badge.svg)
 
 It creates a `.env` file with Variables pointing to 1Password credentials.
 
