@@ -32,7 +32,7 @@ setenv -view
 
 ## Understanding the Stage and StageKey values
 
-Usually you'll have a set of credentials for every stage of the project: **test**, **staging**, **prod**. In order to differentiate them when working on your project, you can in which part of the 1Password structure you want the stage to be added: **vault**, **item**, **vars**.
+Usually you'll have a set of credentials for every stage of the project: **test**, **staging**, **prod**. In order to differentiate them when working on your project, you can choose in which part of the 1Password address structure you want the stage to be added: **vault**, **item**, **vars**.
 
 If you have a vault called *My Project* with three items inside named *Project Vars-test*, *Project Vars-staging* and *Project Vars-prod*, you can set the stagekey to `item` and then you can change stages using the `-stage` flag. You'll end up with a `.env` file like this:
 
@@ -51,7 +51,7 @@ DB_PASSWORD=op://My Project/Project Vars-staging/DB_PASSWORD
 DB_USER=op://My Project/Project Vars-staging/DB_USER
 ```
 
-## Pro Tips
+## Tips
 
 When using values with spaces, enclose them in double quotes, ie:
 
