@@ -50,6 +50,10 @@ func (p *Project) setDotEnv() error {
 		p.addStage()
 	}
 
+	// Sanitize Vault and Item values in case there was a trailing space.
+	p.Vault = strings.TrimSpace(p.Vault)
+	p.Item = strings.TrimSpace(p.Item)
+
 	// Here we iterate over the Variables in our project and create a line for each one, populating the
 	// variable name, vault and item, with the environment in the chosen key.
 	for _, variable := range p.Vars {
