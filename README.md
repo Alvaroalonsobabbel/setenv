@@ -2,13 +2,19 @@
 
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Alvaroalonsobabbel/setenv) ![Test](https://github.com/Alvaroalonsobabbel/setenv/actions/workflows/go-test.yml/badge.svg)
 
-It creates a `.env` file with Variables pointing to 1Password credentials.
+It creates a `.env` file with Variables pointing to 1Password credentials and a `env.json` file that stores all your current project configuation.
 
-Every 1Password credential has a name and a value. This assumes the you named the 1Password credential the same as your env variable.
+Every 1Password credential has a name and a value. This assumes you named the 1Password credential the same as your env variable.
+
+ie:
+
+```bash
+API_KEY=op://Project Vault/Project Item/API_KEY
+```
 
 ## Install
 
-Copy the `setenv` file to your `/usr/local/bin` et voila.
+Copy the `setenv` file to your `/usr/local/bin` et voilà.
 
 ## Usage
 
@@ -34,17 +40,17 @@ setenv -view
 
 Usually you'll have a set of credentials for every stage of the project: **test**, **staging**, **prod**. In order to differentiate them when working on your project, you can choose in which part of the 1Password address structure you want the stage to be added: **vault**, **item**, **vars**.
 
-If you have a vault called *My Project* with three items inside named *Project Vars-test*, *Project Vars-staging* and *Project Vars-prod*, you can set the stagekey to `item` and then you can change stages using the `-stage` flag. You'll end up with a `.env` file like this:
+If you have a vault called *My Project* with three items inside named *Project Vars-test*, *Project Vars-staging* and *Project Vars-prod*, you can set the stagekey to `item` and then you can switch between stages using the `-stage` flag. You'll end up with a `.env` file like this:
 
 ```bash
 DB_PASSWORD=op://My Project/Project Vars-test/DB_PASSWORD
 DB_USER=op://My Project/Project Vars-test/DB_USER
 ```
 
-And you can switch stages as easily as doing:
+Switching stages:
 
 ```bash
-setenv -stage=staging
+$ setenv -stage=staging
 .env has been updated!
 
 DB_PASSWORD=op://My Project/Project Vars-staging/DB_PASSWORD
