@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/Alvaroalonsobabbel/setenv/tree/HEAD)
+
+[Full Changelog](https://github.com/Alvaroalonsobabbel/setenv/compare/0.1.1...HEAD)
+
+**Merged pull requests:**
+
+- Modified the setDotEnv\(\) to create values in quotation marks [\#1](https://github.com/Alvaroalonsobabbel/setenv/pull/1) ([Alvaroalonsobabbel](https://github.com/Alvaroalonsobabbel))
+
 ## [0.1.1](https://github.com/Alvaroalonsobabbel/setenv/tree/0.1.1) (2024-03-05)
 
 [Full Changelog](https://github.com/Alvaroalonsobabbel/setenv/compare/v0.1.0...0.1.1)
