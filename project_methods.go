@@ -57,7 +57,7 @@ func (p *Project) setDotEnv() error {
 	// Here we iterate over the Variables in our project and create a line for each one, populating the
 	// variable name, vault and item, with the environment in the chosen key.
 	for _, variable := range p.Vars {
-		varline := fmt.Sprintf("%v=op://%v/%v/%v", variable, p.Vault, p.Item, variable)
+		varline := fmt.Sprintf("%v=\"op://%v/%v/%v\"", variable, p.Vault, p.Item, variable)
 		if p.tfvars {
 			varline = fmt.Sprintf("TF_VAR_" + varline)
 		}
