@@ -141,6 +141,18 @@ func TestValidateStage(t *testing.T) {
 		}
 	})
 
+	t.Run("with aws_env as stage", func(t *testing.T) {
+		stage := "aws"
+		p := mockProject()
+		err := p.validateStage(stage)
+		if err != nil {
+			t.Errorf("Validate stage error for: %v", stage)
+		}
+		if p.Stage != "$AWS_ENV" {
+			t.Errorf("stage has not been updated")
+		}
+	})
+
 	t.Run("with an invalid stage", func(t *testing.T) {
 		stage := "nope"
 		p := mockProject()

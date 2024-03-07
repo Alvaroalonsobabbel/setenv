@@ -126,8 +126,10 @@ func (p *Project) validateStage(stage string) error {
 	if slices.Contains(stageList, stage) {
 		p.Stage = stage
 		return nil
+	} else if stage == "aws" {
+		p.Stage = "$AWS_ENV"
+		return nil
 	}
-
 	return fmt.Errorf("allowed options are: %v", stageList)
 }
 
@@ -138,6 +140,5 @@ func (p *Project) validateStageKey(stagekey string) error {
 		p.StageKey = stagekey
 		return nil
 	}
-
 	return fmt.Errorf("allowed options are: %v", stageKeyList)
 }
