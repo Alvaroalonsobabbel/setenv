@@ -9,8 +9,10 @@ Every 1Password credential has a name and a value. This assumes you named the 1P
 ie:
 
 ```bash
-API_KEY=op://Project Vault/Project Item/API_KEY
+API_KEY="op://Project Vault/Project Item/API_KEY"
 ```
+
+1Password documentation on how to reference secrets can be found [here](https://developer.1password.com/docs/cli/secret-references).
 
 ## Install
 
@@ -43,8 +45,8 @@ Usually you'll have a set of credentials for every stage of the project: **test*
 If you have a vault called *My Project* with three items inside named *Project Vars-test*, *Project Vars-staging* and *Project Vars-prod*, you can set the stagekey to `item` and then you can switch between stages using the `-stage` flag. You'll end up with a `.env` file like this:
 
 ```bash
-DB_PASSWORD=op://My Project/Project Vars-test/DB_PASSWORD
-DB_USER=op://My Project/Project Vars-test/DB_USER
+DB_PASSWORD="op://My Project/Project Vars-test/DB_PASSWORD"
+DB_USER="op://My Project/Project Vars-test/DB_USER"
 ```
 
 Switching stages:
@@ -53,8 +55,20 @@ Switching stages:
 $ setenv -stage=staging
 .env has been updated!
 
-DB_PASSWORD=op://My Project/Project Vars-staging/DB_PASSWORD
-DB_USER=op://My Project/Project Vars-staging/DB_USER
+DB_PASSWORD="op://My Project/Project Vars-staging/DB_PASSWORD"
+DB_USER="op://My Project/Project Vars-staging/DB_USER"
+```
+
+AWS Stage:
+
+By using the `-stage=aws` command the stage will be set to `$AWS_ENV`.
+
+```bash
+$ setenv -stage=aws
+.env has been updated!
+
+DB_PASSWORD="op://My Project/Project Vars-$AWS_ENV/DB_PASSWORD"
+DB_USER="op://My Project/Project Vars-$AWS_ENV/DB_USER"
 ```
 
 ## Tips
