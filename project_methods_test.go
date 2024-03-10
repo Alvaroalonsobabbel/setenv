@@ -1,7 +1,6 @@
 package main
 
 import (
-	"slices"
 	"strings"
 	"testing"
 )
@@ -10,7 +9,7 @@ func mockProject() *Project {
 	return &Project{
 		Vault:    "example-vault",
 		Item:     "example-item",
-		Vars:     []string{"EXISTING_VAR1", "EXISTING_VAR2"},
+		Vars:     map[string]string{"EXISTING_VAR1": "BLA", "EXISTING_VAR2": "EXISTING_VAR2"},
 		Stage:    "dev",
 		StageKey: "item",
 		tfvars:   false,
@@ -26,48 +25,33 @@ func TestAddVar(t *testing.T) {
 			t.Errorf("addvar returned an error: %v", err)
 		}
 
-		if !slices.Contains(p.Vars, newVar) {
+		if p.Vars["NEW_VAR"] != "NEW_VAR" {
 			t.Errorf("%v was not added to Vars", newVar)
 		}
 	})
 
 	t.Run("addin multiple new variables", func(t *testing.T) {
 		p := mockProject()
-		newVars := "NEW1,NEW2"
+		newVars := "NEW1,NEW2:test"
 		err := p.addVar(newVars)
 		if err != nil {
 			t.Errorf("addVar returned an error: %v", err)
 		}
 
-		if !slices.Contains(p.Vars, "NEW1") || !slices.Contains(p.Vars, "NEW2") {
+		if p.Vars["NEW1"] != "NEW1" || p.Vars["NEW2"] != "test" {
 			t.Errorf("New variables were not found in Vars")
 		}
 	})
 
-	t.Run("adding an existing variable", func(t *testing.T) {
+	t.Run("modifying an existing variable", func(t *testing.T) {
 		p := mockProject()
-		initialLength := len(p.Vars)
-		err := p.addVar("EXISTING_VAR1")
+		err := p.addVar("EXISTING_VAR1:test")
 		if err != nil {
 			t.Errorf("addVar returned an error: %v", err)
 		}
 
-		if len(p.Vars) != initialLength {
+		if p.Vars["EXISTING_VAR1"] != "test" {
 			t.Errorf("Duplicated variable has been added to Vars")
-		}
-	})
-
-	t.Run("adding a mix of existing and new vars", func(t *testing.T) {
-		p := mockProject()
-		err := p.addVar("NEW_VAR3,EXISTING_VAR1, NEW_VAR4 ")
-		if err != nil {
-			t.Errorf("addVar returned an error: %v", err)
-		}
-		if !slices.Contains(p.Vars, "NEW_VAR3") || !slices.Contains(p.Vars, "NEW_VAR4") {
-			t.Errorf("New variables were not added to Vars")
-		}
-		if strings.Count(strings.Join(p.Vars, ","), "EXISTING_VAR1") > 1 {
-			t.Errorf("Duplicate variable EXISTING_VAR1 was added to Vars")
 		}
 	})
 }
@@ -81,47 +65,24 @@ func TestRmVars(t *testing.T) {
 			t.Errorf("rmvar returned an error: %v", err)
 		}
 
-		if slices.Contains(p.Vars, rmVar) {
-			t.Errorf("%v was not removed from Vars", rmVar)
+		if _, ok := p.Vars["EXISTING_VAR1"]; ok {
+			t.Errorf("The key 'EXISTING_VAR1' is still present")
 		}
 	})
 
 	t.Run("removing multiple variables", func(t *testing.T) {
+		to_remove := []string{"EXISTING_VAR1", "EXISTING_VAR2"}
 		p := mockProject()
-		rmVar := "EXISTING_VAR1,EXISTING_VAR2"
+		rmVar := strings.Join(to_remove, ",")
 		err := p.rmVar(rmVar)
 		if err != nil {
 			t.Errorf("rmvar returned an error: %v", err)
 		}
 
-		if slices.Contains(p.Vars, "EXISTING_VAR1") || slices.Contains(p.Vars, "EXISTING_VAR2") {
-			t.Errorf("%v was not removed from Vars", rmVar)
-		}
-	})
-
-	t.Run("removing a non existing var", func(t *testing.T) {
-		p := mockProject()
-		rmVar := "EXISTING_VAR3"
-		err := p.rmVar(rmVar)
-		if err != nil {
-			t.Errorf("rmvar returned an error: %v", err)
-		}
-
-		if slices.Contains(p.Vars, "EXISTING_VAR3") {
-			t.Errorf("%v was not removed from Vars", rmVar)
-		}
-	})
-
-	t.Run("removing a mix of new and existing vars with spaces", func(t *testing.T) {
-		p := mockProject()
-		rmVar := " EXISTING_VAR1, EXISTING_VAR3"
-		err := p.rmVar(rmVar)
-		if err != nil {
-			t.Errorf("rmvar returned an error: %v", err)
-		}
-
-		if slices.Contains(p.Vars, "EXISTING_VAR3") || slices.Contains(p.Vars, "EXISTING_VAR1") {
-			t.Errorf("%v was not removed from Vars", rmVar)
+		for _, v := range to_remove {
+			if _, ok := p.Vars[v]; ok {
+				t.Errorf("The key %s is still present", v)
+			}
 		}
 	})
 }

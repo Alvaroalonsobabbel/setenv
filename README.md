@@ -4,21 +4,13 @@
 
 It creates a `.env` file with Variables pointing to 1Password credentials and a `env.json` file that stores all your current project configuation.
 
-Every 1Password credential has a name and a value. This assumes you named the 1Password credential the same as your env variable.
-
-ie:
-
-```bash
-API_KEY="op://Project Vault/Project Item/API_KEY"
-```
-
 1Password documentation on how to reference secrets can be found [here](https://developer.1password.com/docs/cli/secret-references).
 
 ## Install
 
-Copy the `setenv` file to your `/usr/local/bin` et voilà.
+Copy the latest release of the `setenv` file to your `/usr/local/bin` et voilà.
 
-## Usage
+## Usage Examples
 
 See the help:
 
@@ -36,6 +28,36 @@ View the current project's status:
 
 ```bash
 setenv -view
+```
+
+## Adding and removing variables
+
+You can add variables using the `-addvar=` flag.
+Every 1Password credential has a name and a value. When setting a new variable you'll poit the variable name to the 1Password credential name and that will render the value.
+The  `-addvar=` flag takes one or multiple comma separated vars and the 1Password credential name can be optionally passed separating the variable and the name with a colon. ie:
+
+```bash
+setenv -addvar=DB_USER:my_db_user
+```
+
+This will set a .env like this:
+
+```bash
+DB_USER="op://Project Vault/Project Item/my_db_user"
+```
+
+If no value is passed, the variable name will be used as the 1Pwd credential name, ie:
+
+```bash
+setenv -addvar=DB_USER
+DB_USER="op://Project Vault/Project Item/DB_USER"
+```
+
+Removing vars can be done with the `-rmvar` flag.
+Simply pass the var of list of comma separated vars you want to delete. No need to pass the 1pwd credential name.
+
+```bash
+setenv -rmvar=DB_USER,DB_PASSWORD
 ```
 
 ## Understanding the Stage and StageKey values
@@ -71,7 +93,7 @@ DB_PASSWORD="op://My Project/Project Vars-$AWS_ENV/DB_PASSWORD"
 DB_USER="op://My Project/Project Vars-$AWS_ENV/DB_USER"
 ```
 
-## Tips
+## Handling values with spaces
 
 When using values with spaces, enclose them in double quotes, ie:
 
