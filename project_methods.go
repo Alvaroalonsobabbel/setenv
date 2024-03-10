@@ -45,19 +45,19 @@ func (p *Project) writeJsonEnv() error {
 func (p *Project) setDotEnv() error {
 	var envdata []string
 
-	// We populate the stage in the selected stage key.
+	// Sanitizes Vault and Item values in case there was a trailing space.
+	p.Vault = strings.TrimSpace(p.Vault)
+	p.Item = strings.TrimSpace(p.Item)
+
+	// Populates the stage in the selected stage key.
 	if p.Stage != "" {
 		p.addStage()
 	}
 
-	// Sanitize Vault and Item values in case there was a trailing space.
-	p.Vault = strings.TrimSpace(p.Vault)
-	p.Item = strings.TrimSpace(p.Item)
-
-	// Here we iterate over the Variables in our project and create a line for each one, populating the
+	// Iterates over the Variables in our project and create a line for each one, populating the
 	// variable name, vault and item, with the environment in the chosen key.
-	for _, variable := range p.Vars {
-		varline := fmt.Sprintf("%v=\"op://%v/%v/%v\"", variable, p.Vault, p.Item, variable)
+	for k, v := range p.Vars {
+		varline := fmt.Sprintf("%v=\"op://%v/%v/%v\"", k, p.Vault, p.Item, v)
 		if p.tfvars {
 			varline = fmt.Sprintf("TF_VAR_" + varline)
 		}
@@ -80,47 +80,49 @@ func (p *Project) addStage() {
 	case "item":
 		p.Item = p.Item + "-" + p.Stage
 	case "vars":
-		for i, variable := range p.Vars {
-			p.Vars[i] = variable + "-" + p.Stage
+		for k, v := range p.Vars {
+			p.Vars[k] = v + "-" + p.Stage
 		}
 	}
 }
 
-// It removes vars from the Vars struct's key
+// Removes vars from the Vars struct's key
 func (p *Project) rmVar(toremove string) error {
-	varstoremove, err := sanitinzeVars(toremove)
-	if err != nil {
-		return err
+	var varslice []string
+	// Split the comma separated vars from the flag into a slice.
+	varslice = append(varslice, strings.Split(toremove, ",")...)
+	// Trim whitepsaces and remove the key from the Vars map
+	for i, v := range varslice {
+		varslice[i] = strings.TrimSpace(v)
+		delete(p.Vars, v)
 	}
-	var updatedvars []string
-	// Iterates over the current variables, checkin if it's in the list of variables to remove
-	for _, currentvar := range p.Vars {
-		// Adds the var to a new slice if it's not to remove.
-		if !slices.Contains(varstoremove, currentvar) {
-			updatedvars = append(updatedvars, currentvar)
+	return nil
+}
+
+// Adds vars into the Vars map.
+func (p *Project) addVar(toadd string) error {
+	var varslice []string
+	// Split the comma separated vars from the flag into a slice.
+	varslice = append(varslice, strings.Split(toadd, ",")...)
+	// Iterate over the vars trimming them for whitespaces and adding them in the Vars map.
+	for _, v := range varslice {
+		// Split each key value pair by colon, if any.
+		kvslice := strings.Split(v, ":")
+		// Trim whitepsaces
+		for i, v := range kvslice {
+			kvslice[i] = strings.TrimSpace(v)
+		}
+		// Adding them to the Vars map. If no value was passed, the key will also be set as the value.
+		if len(kvslice) == 1 {
+			p.Vars[kvslice[0]] = kvslice[0]
+		} else {
+			p.Vars[kvslice[0]] = kvslice[1]
 		}
 	}
-	p.Vars = updatedvars
 	return nil
 }
 
-// It adds vars from the Vars struct's key
-func (p *Project) addVar(toadd string) error {
-	varstoadd, err := sanitinzeVars(toadd)
-	if err != nil {
-		return err
-	}
-	// This function receives the vars to add in a comma separated string.
-	// We split it into a slice and append it to the project's Vars.
-	p.Vars = append(p.Vars, varstoadd...)
-
-	// We sort and remove the duplicated vars after.
-	slices.Sort(p.Vars)
-	p.Vars = slices.Compact(p.Vars)
-	return nil
-}
-
-// It validates that the stage pased with the stage flag is allowed.
+// Validates that the stage pased with the stage flag is allowed.
 func (p *Project) validateStage(stage string) error {
 	stageList := []string{"test", "staging", "prod"}
 	if slices.Contains(stageList, stage) {
@@ -133,7 +135,7 @@ func (p *Project) validateStage(stage string) error {
 	return fmt.Errorf("allowed options are: %v", stageList)
 }
 
-// It validates that the stagekey pased with the stagekey flag is allowed.
+// Validates that the stagekey pased with the stagekey flag is allowed.
 func (p *Project) validateStageKey(stagekey string) error {
 	stageKeyList := []string{"vault", "item", "vars"}
 	if slices.Contains(stageKeyList, stagekey) {

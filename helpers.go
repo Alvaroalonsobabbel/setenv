@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"slices"
-	"strings"
 )
 
 // Writes the .env file. It will truncate the file and recreate it every time.
@@ -94,12 +93,8 @@ tfvars:		%v
 Current .env state:
 
 %v
-`, projectData.Vault,
-		projectData.Item,
-		strings.Join(projectData.Vars, ", "),
-		projectData.Stage, projectData.StageKey,
-		projectData.tfvars,
-		string(data))
+`, projectData.Vault, projectData.Item, projectData.Vars, projectData.Stage,
+		projectData.StageKey, projectData.tfvars, string(data))
 
 	os.Exit(0)
 	return nil
@@ -115,7 +110,7 @@ Usage:
 
 Examples:
   Starting a new project:
-    setenv -vault="my vault" -item=project -addvar=DB_USER,DB_PASSWORD -stagekey=item -stage=test
+    setenv -vault="my vault" -item=project -addvar="DB_USER,DB_PASSWORD:private key" -stagekey=item -stage=test
   Prepending TF_VAR_ to every variable:
     setenv -tfvars
   Changing the vault's name:
@@ -129,13 +124,4 @@ Examples:
 
 	os.Exit(0)
 	return nil
-}
-
-// Takes a comma separated string of vars, splits into slice and trim the stirngs.
-func sanitinzeVars(vars string) ([]string, error) {
-	var varslice []string
-	for _, v := range strings.Split(vars, ",") {
-		varslice = append(varslice, strings.TrimSpace(v))
-	}
-	return varslice, nil
 }

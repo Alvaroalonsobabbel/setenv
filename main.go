@@ -7,17 +7,18 @@ import (
 )
 
 type Project struct {
-	Vault    string   `json:"vault"`
-	Item     string   `json:"item"`
-	StageKey string   `json:"stage_key"`
-	Vars     []string `json:"vars"`
-	Stage    string   `json:"stage"`
-	tfvars   bool     `json:"-"`
+	Vault    string            `json:"vault"`
+	Item     string            `json:"item"`
+	StageKey string            `json:"stage_key"`
+	Vars     map[string]string `json:"vars"`
+	Stage    string            `json:"stage"`
+	tfvars   bool              `json:"-"`
 }
 
 var projectData = Project{
 	Stage:  "",
 	tfvars: false,
+	Vars:   make(map[string]string),
 }
 
 func main() {
